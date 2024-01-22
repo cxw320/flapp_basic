@@ -32,6 +32,10 @@ dependencies:
     sdk: flutter
   go_router: ^13.0.1
   dio: ^5.1.2
+  equatable: ^2.0.5
+  # Json annotations library is to help for deserializing
+  json_annotation: ^4.8.1
+  envied: ^0.5.3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -40,6 +44,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  # build runner is used here for us to use the json_serializable package
+  build_runner: ^2.4.6
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
