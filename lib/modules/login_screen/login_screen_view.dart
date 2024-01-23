@@ -1,4 +1,5 @@
 import 'package:flap_basic/domain/entity/event.dart';
+import 'package:flap_basic/modules/login_screen/login_screen_state.dart';
 import 'package:flap_basic/modules/login_screen/login_screen_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -67,7 +68,7 @@ class _LoginInformationWidgetState extends State<LoginInformationWidget> {
   void login() {
     final email = emailController.text;
     final password = passwordController.text;
-    setState(widget.viewModel.login(email, password));
+    widget.viewModel.login(email, password);
   }
 
   @override
@@ -77,7 +78,7 @@ class _LoginInformationWidgetState extends State<LoginInformationWidget> {
     // When state changes and the login event is successful, navigation code will execute below
     // WidgetsBinding.instance.addPostFrameCallback executes when widgets are finished rendering
     // Without the addPostFrameCallback, there will be an error that says you can't update state when widgets are being built
-    if (loginState.loginEvent is SuccessEvent) {
+    if (loginState.value.loginEvent is SuccessEvent) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -93,7 +94,7 @@ class _LoginInformationWidgetState extends State<LoginInformationWidget> {
       onPressed: login,
       child: const Text('Login'),
     );
-    if (loginState.loginEvent is LoadingEvent) {
+    if (loginState.value.loginEvent is LoadingEvent) {
       button = const ElevatedButton(
         onPressed: null,
         child: SizedBox(
@@ -106,43 +107,48 @@ class _LoginInformationWidgetState extends State<LoginInformationWidget> {
       );
     }
 
-    return Column(
-      children: [
-        TextField(
-          key: const ValueKey('emailTextField'),
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            labelText: 'email',
-            errorText: loginState.emailError,
-          ),
-          keyboardType: TextInputType.emailAddress,
-          controller: emailController,
-        ),
-        const SizedBox(
-          height: 4,
-        ),
-        TextField(
-          key: const ValueKey('passwordTextField'),
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            labelText: 'Password',
-            errorText: loginState.passwordError,
-          ),
-          obscureText: true,
-          controller: passwordController,
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        Text(
-          key: const ValueKey('jwtErrorText'),
-          loginState.jwtError ?? '',
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        button,
-      ],
+    return ValueListenableBuilder<LoginScreenState>(
+      valueListenable: widget.viewModel.state,
+      builder: (context, value, child) {
+        return Column(
+          children: [
+            TextField(
+              key: const ValueKey('emailTextField'),
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: 'email',
+                errorText: loginState.value.emailError,
+              ),
+              keyboardType: TextInputType.emailAddress,
+              controller: emailController,
+            ),
+            const SizedBox(
+              height: 4,
+            ),
+            TextField(
+              key: const ValueKey('passwordTextField'),
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: 'Password',
+                errorText: loginState.value.passwordError,
+              ),
+              obscureText: true,
+              controller: passwordController,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            Text(
+              key: const ValueKey('jwtErrorText'),
+              loginState.value.jwtError ?? '',
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            button,
+          ],
+        );
+      },
     );
   }
 }

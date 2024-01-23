@@ -7,20 +7,24 @@ import 'package:flap_basic/domain/entity/user_info.dart';
 import 'package:flap_basic/domain/repository/secure_storage/secure_storage.dart';
 import 'package:flap_basic/domain/usecase/log_in_usecase.dart';
 import 'package:flap_basic/modules/login_screen/login_screen_state.dart';
+import 'package:flutter/material.dart';
 
 class LoginScreenViewModel {
-  LoginScreenViewModel({required this.state, required this.logInUseCase, required this.storageService});
+  LoginScreenViewModel(
+      {required this.logInUseCase,
+      required this.storageService});
 
-  LoginScreenState state;
+  final ValueNotifier<LoginScreenState> state =
+      ValueNotifier<LoginScreenState>(LoginScreenState.initial());
   LogInUseCase logInUseCase;
   StorageService storageService;
 
   void login(String email, String password) async {
-    if (state.loginEvent is LoadingEvent) {
+    if (state.value.loginEvent is LoadingEvent) {
       return;
     }
 
-    state = LoginScreenState.loading();
+    state.value = LoginScreenState.loading();
 
     final response = await logInUseCase.logIn(
       LoginInformation(
@@ -34,12 +38,12 @@ class LoginScreenViewModel {
         final jwtSaveSuccessful = await _saveJwt(response.data.jwtToken);
 
         if (jwtSaveSuccessful) {
-          state = LoginScreenState.success(response.data);
+          state.value = LoginScreenState.success(response.data);
         } else {
-          state = LoginScreenState.error(LoginError.jwtSaveUnsuccessful);
+          state.value = LoginScreenState.error(LoginError.jwtSaveUnsuccessful);
         }
       case ErrorRequestResponse<UserInfo, LoginError>():
-        state = LoginScreenState.error(response.error);
+        state.value = LoginScreenState.error(response.error);
     }
   }
 

@@ -18,12 +18,10 @@ final GoRouter navigationRouter = GoRouter(
       name: 'login',
       path: '/login',
       builder: (BuildContext context, GoRouterState state) {
-        final loginScreenState = LoginScreenState(loginEvent: InitialEvent());
         final authRepo = AuthRepositoryImpl();
         final logInUseCase = LogInUseCaseImpl(authRepository: authRepo);
         final storageService = SecureStorageImpl();
         final loginScreenViewModel = LoginScreenViewModel(
-            state: loginScreenState,
             logInUseCase: logInUseCase,
             storageService: storageService);
         return LoginScreen(viewModel: loginScreenViewModel);
