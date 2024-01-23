@@ -75,41 +75,41 @@ class _LoginInformationWidgetState extends State<LoginInformationWidget> {
   Widget build(BuildContext context) {
     final loginState = widget.viewModel.state;
 
-    // When state changes and the login event is successful, navigation code will execute below
-    // WidgetsBinding.instance.addPostFrameCallback executes when widgets are finished rendering
-    // Without the addPostFrameCallback, there will be an error that says you can't update state when widgets are being built
-    if (loginState.value.loginEvent is SuccessEvent) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('JWT token saved.'),
-          ),
-        );
-        context.go('/home');
-      });
-    }
-
-    ElevatedButton button = ElevatedButton(
-      key: const ValueKey('loginButton'),
-      onPressed: login,
-      child: const Text('Login'),
-    );
-    if (loginState.value.loginEvent is LoadingEvent) {
-      button = const ElevatedButton(
-        onPressed: null,
-        child: SizedBox(
-          height: 24,
-          width: 24,
-          child: CircularProgressIndicator(
-            color: Colors.white,
-          ),
-        ),
-      );
-    }
-
     return ValueListenableBuilder<LoginScreenState>(
       valueListenable: widget.viewModel.state,
       builder: (context, value, child) {
+        // When state changes and the login event is successful, navigation code will execute below
+        // WidgetsBinding.instance.addPostFrameCallback executes when widgets are finished rendering
+        // Without the addPostFrameCallback, there will be an error that says you can't update state when widgets are being built
+        if (loginState.value.loginEvent is SuccessEvent) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('JWT token saved.'),
+              ),
+            );
+            context.go('/home');
+          });
+        }
+
+        ElevatedButton button = ElevatedButton(
+          key: const ValueKey('loginButton'),
+          onPressed: login,
+          child: const Text('Login'),
+        );
+        if (loginState.value.loginEvent is LoadingEvent) {
+          button = const ElevatedButton(
+            onPressed: null,
+            child: SizedBox(
+              height: 24,
+              width: 24,
+              child: CircularProgressIndicator(
+                color: Colors.white,
+              ),
+            ),
+          );
+        }
+
         return Column(
           children: [
             TextField(
